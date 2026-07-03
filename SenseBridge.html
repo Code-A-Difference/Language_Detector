@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensory Bridge: Universal Precision Assistive Engine</title>
+    <style>
+        :root {
+            --bg-main: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #38bdf8;
+            --accent-alert: #ef4444;
+            --border: #334155;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            transition: background-color 0.1s ease;
+        }
+
+        body.sound-alert-flash {
+            background-color: var(--accent-alert) !important;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .header-panel {
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .header-panel h1 {
+            margin: 0 0 8px 0;
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        .header-panel p {
+            margin: 0;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 340px 1fr;
+            }
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .select-control {
+            width: 100%;
+            background-color: #0f172a;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            width: 100%;
+            background-color: var(--primary);
+            color: #0f172a;
+            font-weight: bold;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: opacity 0.15s ease;
+        }
+
+        .btn.active-listening {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .meter-container {
+            width: 100%;
+            background-color: #0f172a;
+            border-radius: 6px;
+            height: 24px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .meter-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, #10b981, #f59e0b, #ef4444);
+            transition: width 0.05s linear;
+        }
+
+        .threshold-marker {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: white;
+            box-shadow: 0 0 4px #000;
+        }
+
+        .caption-viewport {
+            height: 480px;
+            background-color: #000000;
+            border-radius: 8px;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            border: 2px solid var(--border);
+        }
+
+        .caption-row {
+            font-size: 1.4rem;
+            line-height: 1.5;
+            animation: textFadeIn 0.2s ease-out;
+            word-wrap: break-word;
+            padding-bottom: 4px;
+        }
+
+        .caption-row.interim {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .caption-row.final {
+            color: #ffffff;
+            font-weight: 500;
+            border-left: 3px solid var(--primary);
+            padding-left: 8px;
+        }
+
+        .translation-subtext {
+            display: block;
+            font-size: 1.1rem;
+            color: #38bdf8;
+            margin-top: 4px;
+            font-style: normal;
+            font-weight: 400;
+            background: rgba(56, 189, 248, 0.08);
+            padding: 6px 10px;
+            border-radius: 6px;
+        }
+
+        @keyframes textFadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        input[type="range"] {
+            width: 100%;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-panel">
+            <h1>🔊 Precision Sentence-Isolating Sensory Bridge</h1>
+            <p>Forced Mechanical Audio Shutter for Universal Multi-Language Pause Segmentation</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="card">
+                <h2>⚙️ Engine Controls</h2>
+                
+                <div class="control-group">
+                    <button id="system-toggle-btn" class="btn" onclick="initiateSensoryEnvironment()">
+                        🎙️ Start Assistive Matrix
+                    </button>
+                </div>
+
+                <div class="control-group">
+                    <label for="input-lang-select">Spoken Language (Detect)</label>
+                    <select id="input-lang-select" class="select-control" onchange="handleLanguageEngineShift()">
+                        <option value="en-US">English (US)</option>
+                        <option value="es-ES">Español (España)</option>
+                        <option value="es-MX">Español (México)</option>
+                        <option value="hi-IN">हिन्दी (Hindi)</option>
+                        <option value="fr-FR">Français (France)</option>
+                        <option value="de-DE">Deutsch (Deutschland)</option>
+                        <option value="zh-CN">中文 (简体)</option>
+                        <option value="ar-SA">العربية (Saudi Arabia)</option>
+                        <option value="ja-JP">日本語 (Japan)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="output-lang-select">Display Text Language</label>
+                    <select id="output-lang-select" class="select-control" onchange="handleLanguageEngineShift()">
+                        <option value="native">Same as Spoken (No Translation)</option>
+                        <option value="en">Translate to English</option>
+                        <option value="es">Translate to Español</option>
+                        <option value="hi">Translate to हिन्दी</option>
+                        <option value="fr">Translate to Français</option>
+                        <option value="de">Translate to Deutsch</option>
+                        <option value="zh">Translate to 中文</option>
+                    </select>
+                </div>
+
+                <hr style="border: 0; border-top: 1px solid var(--border); margin: 20px 0;">
+
+                <div class="control-group">
+                    <label>Live Micro-Audio Input Level</label>
+                    <div class="meter-container">
+                        <div id="volume-meter-fill" class="meter-bar"></div>
+                        <div id="threshold-line" class="threshold-marker" style="left: 70%;"></div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label id="threshold-label">Spike Alert Threshold: 70%</label>
+                    <input type="range" id="threshold-slider" min="1" max="100" value="70" oninput="updateSensitivityThreshold(this.value)">
+                </div>
+
+                <div class="control-group" style="margin-bottom: 0;">
+                    <label>System Status Diagnostics</label>
+                    <div id="diagnostic-log" style="font-size: 0.8rem; color: var(--text-muted); background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px;">
+                        Awaiting micro-channel array launch.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="display: flex; flex-direction: column;">
+                <h2>📋 Isolated Sentence Stream</h2>
+                <div id="caption-box" class="caption-viewport">
+                    <p id="placeholder-text" style="color: var(--text-muted); margin: auto; text-align: center; font-style: italic;">
+                        Pauses will instantly drop text onto a clean new line across all selected languages.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let audioContextInstance = null;
+        let speechRecognitionEngine = null;
+        let isSystemActive = false;
+        let soundSpikeThresholdValue = 0.70; 
+        let forceStopRecognitionFlag = false;
+
+        // Mechanical Shutter Configurations
+        let lastAcousticEnergyTime = Date.now();
+        const QUIET_PAUSE_LIMIT_MS = 950; // Pause length (ms) before forcing a new line
+        let ongoingLiveString = "";
+
+        const uiToggleBtn = document.getElementById('system-toggle-btn');
+        const uiVolumeFill = document.getElementById('volume-meter-fill');
+        const uiThresholdLine = document.getElementById('threshold-line');
+        const uiThresholdLabel = document.getElementById('threshold-label');
+        const uiCaptionBox = document.getElementById('caption-box');
+        const uiDiagnostics = document.getElementById('diagnostic-log');
+        const uiInputLangSelect = document.getElementById('input-lang-select');
+        const uiOutputLangSelect = document.getElementById('output-lang-select');
+
+        async function initiateSensoryEnvironment() {
+            if (isSystemActive) {
+                forceStopRecognitionFlag = true;
+                if (speechRecognitionEngine) speechRecognitionEngine.stop();
+                location.reload(); 
+                return;
+            }
+
+            uiDiagnostics.innerText = "Routing microphone hardware context...";
+
+            try {
+                const systemMediaStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                initializeAudioContextAnalyzer(systemMediaStream);
+                initializeSpeechTranscriptionEngine();
+
+                isSystemActive = true;
+                uiToggleBtn.innerText = "🛑 Stop Monitoring";
+                uiToggleBtn.classList.add('active-listening');
+                uiDiagnostics.innerText = "Hardware lock established. Mechanical pause segmentation running.";
+                
+                const placeholder = document.getElementById('placeholder-text');
+                if(placeholder) placeholder.remove();
+
+            } catch (err) {
+                uiDiagnostics.innerText = "Error: Input allocation failed.";
+            }
+        }
+
+        function initializeAudioContextAnalyzer(streamSource) {
+            const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+            audioContextInstance = new AudioCtxClass();
+            const mediaSourceNode = audioContextInstance.createMediaStreamSource(streamSource);
+            const frequencyAnalyzerNode = audioContextInstance.createAnalyser();
+            
+            frequencyAnalyzerNode.fftSize = 256;
+            const bufferLength = frequencyAnalyzerNode.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            mediaSourceNode.connect(frequencyAnalyzerNode);
+
+            function processAcousticFrames() {
+                if (!isSystemActive) return;
+                frequencyAnalyzerNode.getByteFrequencyData(dataArray);
+                let energySum = 0;
+                for (let i = 0; i < bufferLength; i++) { energySum += dataArray[i]; }
+                let averageVolumeNormalized = (energySum / bufferLength) / 255; 
+                uiVolumeFill.style.width = `${averageVolumeNormalized * 100}%`;
+                
+                // Monitor vocal threshold activity
+                if (averageVolumeNormalized > 0.025) {
+                    lastAcousticEnergyTime = Date.now();
+                } else {
+                    // Shutter threshold evaluator
+                    if (ongoingLiveString.trim().length > 0 && (Date.now() - lastAcousticEnergyTime > QUIET_PAUSE_LIMIT_MS)) {
+                        forceMechanicalSentenceCut();
+                    }
+                }
+
+                if (averageVolumeNormalized >= soundSpikeThresholdValue) { triggerVisualFlashAlert(); }
+                requestAnimationFrame(processAcousticFrames);
+            }
+            requestAnimationFrame(processAcousticFrames);
+        }
+
+        function initializeSpeechTranscriptionEngine() {
+            const SpeechEngineClass = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechEngineClass) {
+                uiDiagnostics.innerText = "Speech APIs blocked. Use Google Chrome.";
+                return;
+            }
+
+            speechRecognitionEngine = new SpeechEngineClass();
+            speechRecognitionEngine.continuous = true; 
+            speechRecognitionEngine.interimResults = true;
+            speechRecognitionEngine.lang = uiInputLangSelect.value; 
+
+            let activeInterimRowElement = null;
+
+            speechRecognitionEngine.onresult = (event) => {
+                lastAcousticEnergyTime = Date.now(); 
+                
+                if (activeInterimRowElement && activeInterimRowElement.parentNode) {
+                    activeInterimRowElement.remove();
+                }
+
+                let currentResultFrameText = "";
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    currentResultFrameText += event.results[i][0].transcript;
+                }
+
+                currentResultFrameText = currentResultFrameText.trim();
+                if (currentResultFrameText.length === 0) return;
+
+                ongoingLiveString = currentResultFrameText;
+
+                activeInterimRowElement = document.createElement('div');
+                activeInterimRowElement.className = "caption-row interim";
+                activeInterimRowElement.innerText = ongoingLiveString;
+                uiCaptionBox.appendChild(activeInterimRowElement);
+                uiCaptionBox.scrollTop = uiCaptionBox.scrollHeight;
+            };
+
+            speechRecognitionEngine.onend = () => {
+                if (ongoingLiveString.trim().length > 0) {
+                    commitTextToIsolatedRow(ongoingLiveString.trim());
+                }
+                
+                if (activeInterimRowElement && activeInterimRowElement.parentNode) {
+                    activeInterimRowElement.remove();
+                    activeInterimRowElement = null;
+                }
+
+                if (isSystemActive && !forceStopRecognitionFlag) {
+                    speechRecognitionEngine.start();
+                }
+            };
+
+            speechRecognitionEngine.onerror = (e) => {
+                if (e.error === 'aborted') return;
+                console.warn("Speech cycle exception:", e.error);
+            };
+
+            speechRecognitionEngine.start();
+        }
+
+        function forceMechanicalSentenceCut() {
+            if (!speechRecognitionEngine || !isSystemActive) return;
+            speechRecognitionEngine.stop();
+        }
+
+        function commitTextToIsolatedRow(text) {
+            ongoingLiveString = ""; 
+            
+            const finalRowElement = document.createElement('div');
+            finalRowElement.className = "caption-row final";
+            finalRowElement.innerHTML = `<span>${text}</span>`;
+            uiCaptionBox.appendChild(finalRowElement);
+            uiCaptionBox.scrollTop = uiCaptionBox.scrollHeight;
+            
+            const outputTargetLanguage = uiOutputLangSelect.value;
+            if (outputTargetLanguage !== 'native') {
+                const sourceLangPrefix = speechRecognitionEngine.lang.split('-')[0];
+                fetchLiveUniversalTranslation(text, sourceLangPrefix, outputTargetLanguage, finalRowElement);
+            }
+        }
+
+        async function fetchLiveUniversalTranslation(text, sourceLang, targetLang, targetElement) {
+            try {
+                const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data && data[0] && data[0][0] && data[0][0][0]) {
+                    const translatedText = data[0][0][0];
+                    const subtextSpan = document.createElement('span');
+                    subtextSpan.className = "translation-subtext";
+                    subtextSpan.innerHTML = `🔄 ${translatedText}`;
+                    targetElement.appendChild(subtextSpan);
+                    uiCaptionBox.scrollTop = uiCaptionBox.scrollHeight;
+                }
+            } catch (error) {
+                console.error("Translation stream fault:", error);
+            }
+        }
+
+        function handleLanguageEngineShift() {
+            if (!isSystemActive || !speechRecognitionEngine) return;
+            forceStopRecognitionFlag = true;
+            speechRecognitionEngine.stop();
+            ongoingLiveString = "";
+            setTimeout(() => {
+                forceStopRecognitionFlag = false;
+                speechRecognitionEngine.lang = uiInputLangSelect.value;
+                speechRecognitionEngine.start();
+                uiDiagnostics.innerText = `Switched Deck: ${uiInputLangSelect.options[uiInputLangSelect.selectedIndex].text}`;
+            }, 300);
+        }
+
+        let isFlashActive = false;
+        function triggerVisualFlashAlert() {
+            if (isFlashActive) return; 
+            isFlashActive = true;
+            document.body.classList.add('sound-alert-flash');
+            setTimeout(() => {
+                document.body.classList.remove('sound-alert-flash');
+                setTimeout(() => { isFlashActive = false; }, 150);
+            }, 250);
+        }
+
+        function updateSensitivityThreshold(sliderVal) {
+            soundSpikeThresholdValue = parseInt(sliderVal, 10) / 100;
+            uiThresholdLabel.innerText = `Spike Alert Threshold: ${sliderVal}%`;
+            uiThresholdLine.style.left = `${sliderVal}%`;
+        }
+    </script>
+</body>
+</html>
